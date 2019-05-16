@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <div class="container-">
+        <div class="row">
+            <div class="col-12">
+            {% for x in range(5) %}
+                <h1>{{ dataitem[x]["symbol"] }}</h1>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

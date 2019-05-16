@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                {{ wtf.quick_form(form) }}
+                {% if numItems == 0 %}
+                <h1>No Results</h1>
+                {% endif %}
+                {% for x in range(numItems) %}
+                <div class="card mt-5">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">{{ stockData['data'][x]['symbol'] }}</h5>
+{#                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of#}
+{#                            the card's content.</p>#}
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">{{ stockData['data'][x]['name'] }}</li>
+{#                        <li class="list-group-item">Price: ${{ stockData['price']['regularMarketOpen']['raw'] }}</li>#}
+{#                        <li class="list-group-item">Vestibulum at eros</li>#}
+
+                            <form class="float-left m-3" action="/stockDetails" name="stock-details">
+                                <input type="hidden" type="text" id="ticker_symbol" name="ticker_symbol" value="{{ stockData['data'][x]['symbol'] }}">
+                                <input type="submit" value="Stock Details" class="btn btn-info float-right">
+                            </form>
+
+                    </ul>
+{#                    <div class="card-body">#}
+{#                        <a href="#" class="card-link">Card link</a>#}
+{#                        <a href="#" class="card-link">Another link</a>#}
+{#                    </div>#}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

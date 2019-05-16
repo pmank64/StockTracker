@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-8">
+                <div class="card mt-5">
+                    <div class="card-body">
+                        <h1 class="card-title text-success">{{ stockData['data'][0]['symbol'] }}</h1>
+{#                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of#}
+{#                            the card's content.</p>#}
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Company: {{ stockData['data'][0]['name'] }}</li>
+                        <li class="list-group-item">Price: {{ stockData['data'][0]['price'] }}</li>
+                        <li class="list-group-item">Currency: {{ stockData['data'][0]['currency'] }}</li>
+                        <li class="list-group-item">Opening Price: {{ stockData['data'][0]['price_open'] }}</li>
+                        <li class="list-group-item">Day High: {{ stockData['data'][0]['day_high'] }}</li>
+                        <li class="list-group-item">Day Low: {{ stockData['data'][0]['day_low'] }}</li>
+                        <li class="list-group-item">52 Week High: {{ stockData['data'][0]['52_week_high'] }}</li>
+                        <li class="list-group-item">52 Week Low: {{ stockData['data'][0]['52_week_low'] }}</li>
+                        <li class="list-group-item">Day Change: {{ stockData['data'][0]['day_change'] }}</li>
+{#                        <li class="list-group-item">Day Percent Change: {{ (stockData['data'][0]['change_pct'])*100 }}%</li>#}
+                        <li class="list-group-item">Close Yesterday: {{ stockData['data'][0]['close_yesterday'] }}</li>
+                        <li class="list-group-item">Market Cap: {{ stockData['data'][0]['market_cap'] }}</li>
+                        <li class="list-group-item">Volume: {{ stockData['data'][0]['volume'] }}</li>
+                        <li class="list-group-item">Shares: {{ stockData['data'][0]['shares'] }}</li>
+                        <li class="list-group-item">Stock Exchange: {{ stockData['data'][0]['stock_exchange_long'] }}</li>
+                        <li class="list-group-item">Timezone: {{ stockData['data'][0]['timezone'] }}</li>
+{#                        <li class="list-group-item">Price: ${{ stockData['price']['regularMarketOpen']['raw'] }}</li>#}
+{#                        <li class="list-group-item">Vestibulum at eros</li>#}
+                    </ul>
+{#                    <div class="card-body">#}
+{#                        <a href="#" class="card-link">Card link</a>#}
+{#                        <a href="#" class="card-link">Another link</a>#}
+{#                    </div>#}
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card mt-5">
+                    <div class="card-body">
+                        {% for x in range(3) %}
+                        <h4>{{ news['items']['result'][x]['title'] }}</h4>
+                        {% endfor %}
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="card mt-5">
+                    <div class="card-body">
+                        <h1 class="card-title text-success">PE Ratio</h1>
+                    <div class="card-text">
+                        <p class={{ listItems[1] }}>PE Ratio: {{ listItems[0] }}</p>
+                        {{ listItems[2] }}
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card mt-5">
+                    <div class="card-body">
+                        <h1 class="card-title text-success">50 Day Moving Average</h1>
+                    <div class="card-text">
+                        <p class={{ listItems[1] }}>Morningstar Rating: {{ MSR }}</p>
+                        {{ listItems[2] }}
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
