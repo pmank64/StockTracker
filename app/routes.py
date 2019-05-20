@@ -1,10 +1,11 @@
-from app import app
+from app import app, db
 from flask import render_template, flash, redirect, url_for, request
 from datetime import datetime
 from werkzeug.urls import url_parse
 import urllib.request, json
 import requests
 from app.forms import SearchForm
+from app.models import Symbol
 
 
 
@@ -18,6 +19,25 @@ def index():
     test = result.json()
     items = test["result"][0]["quotes"]
     return render_template('index.html', title='Home', dataitem=items)
+
+
+
+
+
+@app.route('/load')
+def loadToDatabase():
+    nUrl = "https://stock.p.rapidapi.com/v1/funds"
+    headers = {'X-RapidAPI-Key': '2700cac5b5msh2621b9602e858f1p117364jsn648fb90776eb'}
+    result = requests.get(nUrl, headers=headers)
+    jsonFromat = result.json()
+    funds = jsonFromat['result']['funds']
+    fundList = []
+    for item in funds:
+        stock = Symbol(symbol=item['symbol'], company_name=item['name'],sentiment_score=item['sentimentscore'])
+        db.session.add(stock)
+        db.session.commit()
+    return redirect(url_for('index'))
+
 
 
 def headers(apikey):
@@ -64,15 +84,20 @@ def stockDetails():
     newurl = "https://www.worldtradingdata.com/api/v1/stock?symbol=" + str(ticker_symbol) + "&api_token=MyCkuCYIniSmfOo5jNMttDtjLlHE4VpeiCQNJDJzCSJc6J5Z2NkWaNhQxOF9"
     result = requests.get(newurl)
     stockData = result.json()
-    listItems = PEAnalysis(ticker_symbol)
-    MorningStar = MSR(ticker_symbol)
-    news = getStockNews(ticker_symbol)
-    return render_template('stockDetails.html', title=ticker_symbol, stockData=stockData, listItems=listItems, MSR=MorningStar, news=news)
+    if 'data' in stockData:
+        listItems = PEAnalysis(ticker_symbol)
+        MorningStar = MSR(ticker_symbol)
+        news = getStockNews(ticker_symbol)
+        return render_template('stockDetails.html', title=ticker_symbol, stockData=stockData, listItems=listItems, MSR=MorningStar, news=news)
+    return render_template('stockDetails.html', title=ticker_symbol, stockData=stockData, listItems=[], MSR=0, news=[])
 
 
 def PEAnalysis(stock_symbol):
     stockData = queryStock(stock_symbol)
-    peRatio = stockData['defaultKeyStatistics']['forwardPE']['raw']
+    try:
+        peRatio = stockData['defaultKeyStatistics']['forwardPE']['raw']
+    except:
+        return [0,"text-danger", "PE Ratio Not Applicable"]
     color = ""
     message = ""
     if peRatio <= 15:
@@ -98,3 +123,18 @@ def getStockNews(stock_symbol):
     result = requests.get(newurl, headers=headers)
     stockNews = result.json()
     return stockNews
+
+@app.route('/sentiment', methods=['GET', 'POST'])
+def sentiment():
+    nUrl = "https://stock.p.rapidapi.com/v1/funds"
+    headers = {'X-RapidAPI-Key': '2700cac5b5msh2621b9602e858f1p117364jsn648fb90776eb'}
+    result = requests.get(nUrl, headers=headers)
+    jsonFromat = result.json()
+    funds = jsonFromat['result']['funds']
+    fundList = []
+    sentimentList = []
+    for item in funds:
+        fundList.append(item['symbol'])
+    for item in sentimentList:
+        sentimentList.append(item['sentimentscore'])
+    return render_template('sentiment.html', jsonFromat=jsonFromat, fundList=fundList, sentimentList=sentimentList)

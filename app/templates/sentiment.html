@@ -4,8 +4,16 @@
 {% block app_content %}
     <div class="container">
         <div class="row">
-            <div class="col-8">
-                        </div>
-    </div>
+            <div class="col-6">
+            {% for item in fundList %}
+            <form class="float-left m-3" action="/stockDetails" name="stock-details">
+                <input type="hidden" type="text" id="ticker_symbol" name="ticker_symbol" value="{{ item }}">
+                <input type="submit" value="{{ item }}" class="btn btn-info float-right">
+            </form>
+            {% endfor %}
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
     </div>
 {% endblock %}

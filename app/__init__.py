@@ -10,6 +10,8 @@ from logging.handlers import SMTPHandler, RotatingFileHandler
 
 app = Flask(__name__)
 app.config.from_object(Config)
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 bootstrap = Bootstrap(app)
 
-from app import routes
+from app import routes, models
