@@ -32,6 +32,13 @@ def loadToDatabase():
     jsonFromat = result.json()
     funds = jsonFromat['result']['funds']
     fundList = []
+
+    symbolList = []
+    for item in funds:
+        symbolList.append(item['symbol'])
+
+
+
     for item in funds:
         stock = Symbol(symbol=item['symbol'], company_name=item['name'],sentiment_score=item['sentimentscore'])
         db.session.add(stock)
