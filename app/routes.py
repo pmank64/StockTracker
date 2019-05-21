@@ -34,16 +34,26 @@ def loadToDatabase():
     fundList = []
 
     symbolList = []
+    appendToString = ""
     for item in funds:
+        appendToString+=item['symbol'] + "%2C"
         symbolList.append(item['symbol'])
 
+    extraInfoURL = "https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/get-quotes?region=US&lang=en&symbols=" + appendToString
+    yahooResult = requests.get(extraInfoURL, headers=headers)
+    jsonYahoo = yahooResult.json()
 
 
-    for item in funds:
-        stock = Symbol(symbol=item['symbol'], company_name=item['name'],sentiment_score=item['sentimentscore'])
-        db.session.add(stock)
-        db.session.commit()
-    return redirect(url_for('index'))
+
+    priceList = []
+    for i in range(len(jsonYahoo['quoteResponse']['result'])):
+        priceList.append(jsonYahoo['quoteResponse']['result'][i])
+
+    # for item in funds:
+    #     stock = Symbol(symbol=item['symbol'], company_name=item['name'],sentiment_score=item['sentimentscore'])
+    #     db.session.add(stock)
+    #     db.session.commit()
+    return render_template('quotes.html', title='Quotes', priceList=priceList)
 
 
 
